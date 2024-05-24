@@ -13,7 +13,12 @@ export default function App() {
       ...currentListOfCourseGoals,
       { text: newGoal, key: Math.random().toString() },
     ]);
-    // console.log(listOfCourseGoals);
+  }
+
+  function deleteGoalHandler(id) {
+    setListOfCourseGoals((currentListOfCourseGoals) =>
+      currentListOfCourseGoals.filter((goal) => goal.key !== id)
+    );
   }
 
   return (
@@ -26,7 +31,13 @@ export default function App() {
         <FlatList
           data={listOfCourseGoals}
           renderItem={(itemData) => {
-            return <GoalItem goalText={itemData.item.text} />;
+            return (
+              <GoalItem
+                goalText={itemData.item.text}
+                goalId={itemData.item.key}
+                handleDelete={deleteGoalHandler}
+              />
+            );
           }}
           alwaysBounceVertical={false}
         />
