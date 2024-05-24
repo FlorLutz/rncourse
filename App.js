@@ -1,12 +1,14 @@
 import { useState } from "react";
-import { StyleSheet, Text, View, FlatList } from "react-native";
+import { StyleSheet, Text, View, FlatList, Button } from "react-native";
+import { StatusBar } from "expo-status-bar";
 import GoalItem from "./components/GoalItem";
 import GoalInput from "./components/GoalInput";
 
 export default function App() {
   const [listOfCourseGoals, setListOfCourseGoals] = useState([]);
+  const [isModalShown, setIsModalShown] = useState(false);
 
-  function addGoalHandler(newGoal) {
+  function handleAddGoal(newGoal) {
     // possible, but better way would be to use an arrow function as done below:
     // setListOfCourseGoals([enteredGoalText, ...listOfCourseGoals]);
     setListOfCourseGoals((currentListOfCourseGoals) => [
@@ -21,28 +23,45 @@ export default function App() {
     );
   }
 
+  function handleToggleModal() {
+    setIsModalShown(!isModalShown);
+  }
+
   return (
-    <View style={styles.appContainer}>
-      <View>
-        <Text style={styles.headline}>React Course Goals App</Text>
-      </View>
-      <GoalInput handleAddGoal={addGoalHandler} style={styles.goalInputComp} />
-      <View style={styles.goalsContainer}>
-        <FlatList
-          data={listOfCourseGoals}
-          renderItem={(itemData) => {
-            return (
-              <GoalItem
-                goalText={itemData.item.text}
-                goalId={itemData.item.key}
-                handleDelete={deleteGoalHandler}
-              />
-            );
-          }}
-          alwaysBounceVertical={false}
+    <>
+      <StatusBar style="light" />
+      <View style={styles.appContainer}>
+        <View>
+          <Text style={styles.headline}>React Course Goals App</Text>
+        </View>
+        <Button
+          title="Add New Goal"
+          color="rgb(12 74 110)"
+          onPress={handleToggleModal}
         />
+        <GoalInput
+          handleAddGoal={handleAddGoal}
+          style={styles.goalInputComp}
+          isModalShown={isModalShown}
+          closeModal={handleToggleModal}
+        />
+        <View style={styles.goalsContainer}>
+          <FlatList
+            data={listOfCourseGoals}
+            renderItem={(itemData) => {
+              return (
+                <GoalItem
+                  goalText={itemData.item.text}
+                  goalId={itemData.item.key}
+                  handleDelete={deleteGoalHandler}
+                />
+              );
+            }}
+            alwaysBounceVertical={false}
+          />
+        </View>
       </View>
-    </View>
+    </>
   );
 }
 
